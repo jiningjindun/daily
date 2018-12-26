@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>每月数据</title>
+    <link href="../assets/css/reset.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/js/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/layout.css" rel="stylesheet" type="text/css" />
+</head>
+<!--<script src="../assets/json/datagrid_data.js" type="text/javascript"></script>-->
+<script src="../assets/js/jquery2.1.1.js" type="text/javascript"></script>
+<script src="../assets/js/jquery.easyui.min.js" type="text/javascript"></script>
+<body class="padding10">
+
+<div class="tools-row">
+    <div style="margin-top:5px;">
+        <span style="margin-left:5px">
+            级级:<input class="easyui-combobox" id="xx" data-options="url:'***',valueField:'xxvlaue',textField:'xxtext',width:80"/>
+        </span>
+    </div>
+</div>
+<div class="tools-row" style=" position:relative">
+    <form id="uploadfile" style="margin:0px">
+         <span style="position:absolute; right:20px">
+                    <button id="btnadd" type="button" class="but-primary" onclick="appendRow()">
+                    新增</button>
+                    <button id="btndel" type="button" class="but-primary" onclick="deleteRows()">
+                    删除</button>
+        </span>
+    </form>
+</div>
+
+<table id="dg" class="easyui-datagrid">
+
+</table>
+
+<script type="text/javascript" language="javascript">
+    $(function () {
+        binddata();
+    });
+    function getparam() {
+        var paramobj = {};
+        paramobj.xx = $("#xx").combobox('getValue');
+        return paramobj;
+    }
+    function binddata() {
+        var paramobj = getparam();
+        $("#dg").datagrid({
+            width: 'auto',
+            height: 'auto',
+            autoRowHeight: false,
+            url: "/busy/query",
+            queryParams: paramobj,
+            columns: [[
+                { field: 'ck', title: '', width: 100, checkbox: true },
+                { field: 'companyName', title: '事业部名称', width: 80, editor: { type: 'textbox', options: { required: true}} },
+                { field: 'yearNo', title: '年份', width: 50, editor: { type: 'textbox', options: { disabled: false}} },
+                { field: 'monthNo', title: '月份', width: 90, editor: { type: 'textbox', options: { disabled: false}} },
+                { field: 'outAllNum', title: '发货单总量', width: 50, editor: { type: 'textbox', options: { disabled: true}} },
+               /* { field: 'dm', title: '代码', width: 80, editor: { type: 'combobox'} },*/
+                { field: 'action', title: '操作', width: 130, align: 'center',
+                    formatter: function (value, row, index) {
+                        var a = "";
+                        if (row.flag == "add") {
+                            a = "<a href=\"javascript:void(0)\" class=\"easyui-linkbutton l-btn l-btn-small l-btn-plain\" data-options=\"iconCls:'icon-add',plain:true\" onclick=\"saveinfo()\"><span class=\"l-btn-left l-btn-icon-left\"><span class=\"l-btn-text\">添加</span><span class=\"l-btn-icon icon-add\">&nbsp;</span></span></a>";
+                            a += "<a href=\"javascript:void(0)\" class=\"easyui-linkbutton l-btn l-btn-small l-btn-plain\" data-options=\"iconCls:'icon-undo',plain:true\" onclick=\"removeRow()\"><span class=\"l-btn-left l-btn-icon-left\"><span class=\"l-btn-text\">撤销</span><span class=\"l-btn-icon icon-undo\">&nbsp;</span></span></a>"
+                        }
+                        else if (row.flag == "edit") {
+                            a = "<a href=\"javascript:void(0)\" class=\"easyui-linkbutton l-btn l-btn-small l-btn-plain\" data-options=\"iconCls:'icon-save',plain:true\" onclick=\"editsave()\"><span class=\"l-btn-left l-btn-icon-left\"><span class=\"l-btn-text\">保存</span><span class=\"l-btn-icon icon-save\">&nbsp;</span></span></a>";
+                            a += "<a href=\"javascript:void(0)\" class=\"easyui-linkbutton l-btn l-btn-small l-btn-plain\" data-options=\"iconCls:'icon-undo',plain:true\" onclick=\"cancelRow()\"><span class=\"l-btn-left l-btn-icon-left\"><span class=\"l-btn-text\">撤销</span><span class=\"l-btn-icon icon-undo\">&nbsp;</span></span></a>"
+                        }
+                        else {
+                            a = "<a href=\"javascript:void(0)\" class=\"easyui-linkbutton l-btn l-btn-small l-btn-plain\" data-options=\"iconCls:'icon-edit',plain:true\" onclick=\"editRow('" + index + "')\"><span class=\"l-btn-left l-btn-icon-left\"><span class=\"l-btn-text\">编辑</span><span class=\"l-btn-icon icon-edit\">&nbsp;</span></span></a>";
+                        }
+                        return a;
+                    }
+                }
+            ]],
+            pageSize: 10,
+            pageList: [10, 20, 30, 50],
+            fitColumns: true,
+            striped: true,
+            pagination: true, //分页控件
+            rownumbers: true, //行号
+            toolbar: "#menue",
+            selectOnCheck:false,
+            onBeforeSelect: function () {
+                return false;
+            },
+            onBeforeEdit: function (index, row) {
+                if (row.flag != "add") {
+                    row.flag = "edit";
+                }
+                $('#dg').datagrid('refreshRow', index);
+            },
+            onBeginEdit: function (index, row) {
+                var editrow = $("#dg").datagrid('getEditors', index);
+                editrow[0].target.textbox({ onChange: function (newvalue, oldvalue) {
+                    onChangeAction(newvalue, editrow);
+                }
+                });
+                if (row.flag != "add") {
+                    var editrow = $("#dg").datagrid('getEditors', index);
+                    /*$.post('getdm', function (data) {
+                        editrow[3].target.combobox({ disabled: true, data: data, valueField: 'dm', textField: 'mc', value: row.dm });
+                    }, 'json')*/
+                    editrow[0].target.textbox({ disabled: true });
+                }
+                else {
+                    /*$.post('getDrop', function (data) {
+                        editrow[3].target.combobox({ data: data, valueField: 'dm', textField: 'mc', value: row.dm });
+                    }, 'json')*/
+                }
+            },
+            onAfterEdit: function (index, row) {
+                row.flag = undefined;
+                $('#dg').datagrid('refreshRow', index);
+            },
+            onCancelEdit: function (index, row) {
+                row.flag = undefined;
+                $('#dg').datagrid('refreshRow', index);
+            },
+            onClickCell: function (index, field, value) {
+                var row = $("#dg").datagrid('getRows')[index];
+                if (field == "action") {
+                    row.field = "action";
+                    $("#dg").datagrid("unselectRow", index);
+                    $("#dg").datagrid("uncheckRow", index);
+                }
+                else {
+                    row.field = undefined;
+                }
+            },
+            onClickRow: function (index, row) {
+                if (row.field == "action") {
+                    $("#dg").datagrid("unselectRow", index);
+                    $("#dg").datagrid("uncheckRow", index);
+                }
+            }
+        })
+        editindex = undefined;
+    }
+    function onChangeAction(xh,editrow) {
+        var row = editrow;
+       /* var pcdm = row[3].actions.getValue(row[3].target);
+        $.post("getAnddm", { bh: bh, dm: dm }, function (data) {
+            row[2].actions.setValue(row[2].target, data.tm);
+            row[3].actions.setValue(row[3].target, data.fx);
+        }, "json");*/
+    }
+    function reload() {
+        var paramobj = getparam();
+        $("#dg").datagrid('reload', paramobj);
+    }
+    var editindex = undefined;
+    function removeRow() {
+        if (editindex != undefined) {
+            $("#dg").datagrid("deleteRow", editindex);
+            editindex = undefined;
+        }
+    }
+    function editRow(id) {
+        if (editindex == undefined) {
+            editindex = parseInt(id);
+            $("#dg").datagrid("beginEdit", editindex);
+        }
+    }
+    function cancelRow() {
+        if (editindex != undefined) {
+            $("#dg").datagrid("cancelEdit", editindex);
+            editindex = undefined;
+        }
+    }
+
+    function appendRow() {
+        if (editindex == undefined) {
+            var newrowindex = 0;
+            $("#dg").datagrid("insertRow", { index: 0, row: { flag: 'add'} });
+            editindex = newrowindex;
+            $("#dg").datagrid("beginEdit", editindex);
+        }
+    }
+    function editsave() {
+        var editRow = $("#dg").datagrid('getEditors', editindex);
+        var paramobj = new Object();
+        var row = $("#dg").datagrid('getRows', editindex);
+        paramobj.id = row[editindex].id;
+        paramobj.companyName = editRow[0].actions.getValue(editRow[0].target);
+        paramobj.yearNo = editRow[1].actions.getValue(editRow[1].target);
+        paramobj.monthNo = editRow[2].actions.getValue(editRow[2].target);
+        paramobj.outAllNum = editRow[3].actions.getValue(editRow[3].target);
+
+        $.post("/busy/update", paramobj, function (data) {
+            if (data.flag == "1") {
+                reload();
+                editindex = undefined;
+            }
+            else {
+                $.messager.alert("提示",data.msg,"error");
+            }
+        }, "json")
+    }
+    function deleteRows() {
+        var rows = $("#dg").datagrid("getChecked");
+        if (rows.length == 0) {
+            $.messager.alert("提示", "请选择要删除！", "info");
+            return;
+        }
+        $.messager.confirm("确认", "确定要删除？", function (isok) {
+            if (isok) {
+                var md = [];
+                $.each(rows, function (index, row) {
+                    md.push(row.id);
+                })
+                var ids = md.join(',');
+                $.ajax({
+                    url: "/busy/deleteCheck",
+                    type: "post",
+                    data: { ids: ids },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.flag == "1") {
+                            reload();
+                        }
+                        else {
+                            $.messager.alert("提示", data.msg);
+                        }
+                    }
+                })
+            }
+        })
+    }
+    function saveinfo() {
+        var paramobj = new Object();
+        var editRow = $("#dg").datagrid("getEditors", editindex);
+        paramobj.companyName = editRow[0].actions.getValue(editRow[0].target);
+        paramobj.yearNo = editRow[1].actions.getValue(editRow[1].target);
+        paramobj.monthNo = editRow[2].actions.getValue(editRow[2].target);
+        paramobj.outAllNum = editRow[3].actions.getValue(editRow[3].target);
+        $.post("saveinfo", paramobj, function (data) {
+            if (data.flag == "1") {
+                editindex = undefined;
+                reload();
+            }
+            else {
+                $.messager.alert("提示", data.msg, "error");
+            }
+        }, "json");
+    }
+
+
+
+</script>
+</body>
+</html>

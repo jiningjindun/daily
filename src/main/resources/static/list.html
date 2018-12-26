@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>每月数据</title>
+    <link href="../assets/css/reset.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/js/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/layout.css" rel="stylesheet" type="text/css" />
+</head>
+<!--<script src="../assets/json/datagrid_data.js" type="text/javascript"></script>-->
+
+<body class="padding10">
+<div id="p" class="easyui-panel" title="每月数据" style="width:100%;height:700px;padding:10px;"
+     data-options="iconCls:'fa fa-save',collapsible:false,minimizable:false,maximizable:true,closable:false">
+
+    <table class="easyui-datagrid"  fitColumns="true" pageSize="20" pagination="true" style="width:100%;"
+           url="/busy/query"  data-options="singleSelect:true" toolbar="#tb" rownumbers="true">
+        <thead>
+        <tr>
+            <th data-options="field:'companyName',width:50" sortable="true">事业部名称</th>
+            <th data-options="field:'yearNo',width:30" sortable="true">年份</th>
+            <th data-options="field:'monthNo',width:30" sortable="true">月份</th>
+            <th data-options="field:'outAllNum',width:40" sortable="true">发货单总量</th>
+            <th data-options="field:'rcvNum',width:30,align:'left'">接收超标</th>
+            <th data-options="field:'outday',width:30,align:'left'">超标天数</th>
+
+            <th data-options="field:'purchaseAllNum',width:40,align:'left'">入库总数</th>
+            <th data-options="field:'checkNum',width:40,align:'left'">检验超标</th>
+            <th data-options="field:'inStockNum',width:40,align:'left'">入库超标</th>
+
+            <th data-options="field:'invoiceHand',width:40,align:'left'">手工价差</th>
+            <th data-options="field:'invoiceDiff',width:40,align:'left'">异常价差</th>
+            <th data-options="field:'invoiceNum',width:40,align:'left'">发票总数</th>
+
+        </tr>
+        </thead>
+    </table>
+</div>
+<script src="../assets/js/jquery2.1.1.js" type="text/javascript"></script>
+<script src="../assets/js/jquery.easyui.min.js" type="text/javascript"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+      name: test
+      url: jdbc:mysql://192.168.47.130:3306/daily_analysis?useUnicode=true&characterEncoding=UTF-8
+      username: root
+      password: 123456
+      # 使用druid数据源
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-class-name: com.mysql.jdbc.Driver
+      filters: stat
+      maxActive: 20
+      initialSize: 1
+      maxWait: 60000
+      minIdle: 1
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 20
+
+  http:
+      multipart:
+        enabled: true
+        max-file-size: 20MB
+        max-request-size: 20MB
+mybatis:
+  mapper-locations: classpath:mapping/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
+  type-aliases-package: com.nissin.daily.entity  # 注意：对应实体类的路径
+#通用mapper的所在接口名称 不只是包名
+mapper:
+  mappers: com.nissin.daily.utils.MyMapper
+  identity: MYSQL
+
+logging :
+  level:
+    com:
+        nissin:
+          daily:
+            mapper: debug
+file:
+  path: E:/home/yulong/bak/

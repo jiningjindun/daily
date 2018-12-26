@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nissin.daily.mapper.EachMonthDataMapper" >
+  <resultMap id="BaseResultMap" type="com.nissin.daily.entity.EachMonthData" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="companyId" property="companyid" jdbcType="INTEGER" />
+    <result column="companyName" property="companyname" jdbcType="VARCHAR" />
+    <result column="yearNo" property="yearno" jdbcType="INTEGER" />
+    <result column="monthNo" property="monthno" jdbcType="INTEGER" />
+    <result column="rcvNum" property="rcvnum" jdbcType="INTEGER" />
+    <result column="outAllNum" property="outallnum" jdbcType="INTEGER" />
+    <result column="checkNum" property="checknum" jdbcType="INTEGER" />
+    <result column="inStockNum" property="instocknum" jdbcType="INTEGER" />
+    <result column="purchaseAllNum" property="purchaseallnum" jdbcType="INTEGER" />
+    <result column="purchaseMoney" property="purchasemoney" jdbcType="VARCHAR" />
+    <result column="gapMoney" property="gapmoney" jdbcType="VARCHAR" />
+    <result column="invoiceHand" property="invoicehand" jdbcType="INTEGER" />
+    <result column="invoiceTen" property="invoiceten" jdbcType="INTEGER" />
+    <result column="invoiceFive" property="invoicefive" jdbcType="INTEGER" />
+    <result column="invoiceBai" property="invoicebai" jdbcType="INTEGER" />
+    <result column="invoiceNum" property="invoicenum" jdbcType="INTEGER" />
+    <result column="invoiceDiff" property="invoicediff" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="freestyle" property="freestyle" jdbcType="INTEGER" />
+    <result column="outday" property="outday" jdbcType="INTEGER" />
+
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, companyId, companyName, yearNo, monthNo, rcvNum, outAllNum, checkNum, inStockNum, 
+    purchaseAllNum, purchaseMoney, gapMoney, invoiceHand, invoiceTen, invoiceFive, invoiceBai, 
+    invoiceDiff,invoiceNum, code,freestyle,outday
+  </sql>
+
+  <select id="getSixMonthData" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from
+    each_month_data
+    where 1=1
+    <if test="companyId != null">
+      AND
+      companyId =  #{companyId,jdbcType=INTEGER}
+    </if>
+
+    order by id desc limit 6
+
+  </select>
+  <select id="getNowMonthData" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from each_month_data
+    where companyId = #{companyId,jdbcType=INTEGER} and
+    yearNo = #{yearNo,jdbcType=INTEGER} and
+    monthNo = #{monthNo,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectTraineeLimit" parameterType="map" resultType="map">
+    select
+    *
+    from
+    each_month_data
+    <where>
+      <if test="monthNo != null and monthNo != ''">
+        and each_month_data.monthNo = #{monthNo}
+      </if>
+      <if test="yearNo != null and yearNo != ''">
+        and each_month_data.yearNo = #{yearNo}
+      </if>
+      <if test="cid != null and cid != ''">
+        and each_month_data.companyId = #{cid}
+      </if>
+
+    </where>
+    order by
+    each_month_data.id desc
+    limit
+    #{firstPage},
+    #{rows};
+  </select>
+
+  <select id="getTraineeTotal" parameterType="map" resultType="long">
+    select count(id) from each_month_data
+    <where>
+      <if test="monthNo != null and monthNo != ''">
+        and each_month_data.monthNo = #{monthNo}
+      </if>
+      <if test="yearNo != null and yearNo != ''">
+        and each_month_data.yearNo = #{yearNo}
+      </if>
+      <if test="cid != null and cid != ''">
+        and each_month_data.companyId = #{cid}
+      </if>
+    </where>
+  </select>
+
+</mapper>
