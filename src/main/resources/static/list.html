@@ -3,41 +3,479 @@
 <head>
     <meta charset="UTF-8">
     <title>每月数据</title>
-    <link href="../assets/css/reset.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/js/themes/default/easyui.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <link href="../assets/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/reset.css" rel="stylesheet" type="text/css" />
+    <link href="assets/js/themes/default/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/layout.css" rel="stylesheet" type="text/css" />
 </head>
-<!--<script src="../assets/json/datagrid_data.js" type="text/javascript"></script>-->
-
+<script src="assets/js/jquery2.1.1.js" type="text/javascript"></script>
+<script src="assets/js/jquery.easyui.min.js" type="text/javascript"></script>
+<script src="assets/js/layer.js" type="text/javascript"></script>
 <body class="padding10">
-<div id="p" class="easyui-panel" title="每月数据" style="width:100%;height:700px;padding:10px;"
-     data-options="iconCls:'fa fa-save',collapsible:false,minimizable:false,maximizable:true,closable:false">
 
-    <table class="easyui-datagrid"  fitColumns="true" pageSize="20" pagination="true" style="width:100%;"
-           url="/busy/query"  data-options="singleSelect:true" toolbar="#tb" rownumbers="true">
-        <thead>
+<div class="tools-row" style="padding-bottom:2px;">
+    <!--<table cellpadding="0" cellspacing="0" style="width:100%">
         <tr>
-            <th data-options="field:'companyName',width:50" sortable="true">事业部名称</th>
-            <th data-options="field:'yearNo',width:30" sortable="true">年份</th>
-            <th data-options="field:'monthNo',width:30" sortable="true">月份</th>
-            <th data-options="field:'outAllNum',width:40" sortable="true">发货单总量</th>
-            <th data-options="field:'rcvNum',width:30,align:'left'">接收超标</th>
-            <th data-options="field:'outday',width:30,align:'left'">超标天数</th>
-
-            <th data-options="field:'purchaseAllNum',width:40,align:'left'">入库总数</th>
-            <th data-options="field:'checkNum',width:40,align:'left'">检验超标</th>
-            <th data-options="field:'inStockNum',width:40,align:'left'">入库超标</th>
-
-            <th data-options="field:'invoiceHand',width:40,align:'left'">手工价差</th>
-            <th data-options="field:'invoiceDiff',width:40,align:'left'">异常价差</th>
-            <th data-options="field:'invoiceNum',width:40,align:'left'">发票总数</th>
-
+            <td>日清日结每月数据</td>
+            &lt;!&ndash;<td style="height:28px;" colspan="2">
+                账号:<input class="easyui-textbox" id="txtUserZhxm" data-options="width:80"/>
+                &nbsp; &nbsp; <button id="btnsearch" type="button" class="but-default" onclick="UserinfoSearch()"><span class="icon icon-magnifier"></span> 查询</button>
+            </td>&ndash;&gt;
+            <td align="right">
+                &lt;!&ndash;<button id="btnadd" type="button" class="easyui-linkbutton btnPrimary"  onclick="EidtUserForm()"><span class="icon icon-add"></span>新增</button>&ndash;&gt;
+                <button id="btndel" type="button" class="easyui-linkbutton   btnDanger"  onclick="User_Del()"><span class="icon icon-delete"></span>删除</button>
+            </td>
         </tr>
-        </thead>
-    </table>
+    </table>-->
+    <div class="btnbar-tools">
+       <!-- <a href="javascript:;" class="add" id="newData"><i class="fa fa-plus-square success"></i>添加</a>-->
+        <a href="javascript:;" class="edit"><i class="fa fa-pencil-square info"></i>编辑</a>
+        <a href="javascript:;" class="del"><i class="fa fa-times-rectangle danger"></i>删除</a>
+       <!-- <a href="javascript:;" class="count"><i class="fa fa-pie-chart purple"></i>统计</a>
+        <a href="javascript:;" class="check"><i class="fa fa-check-circle yellow"></i>审核</a>-->
+    </div>
 </div>
-<script src="../assets/js/jquery2.1.1.js" type="text/javascript"></script>
-<script src="../assets/js/jquery.easyui.min.js" type="text/javascript"></script>
+<table id="dg"></table>
+<div class="div_empty" style="height: 150px; display:none; border-top: 0px solid; background-color:White;">
+    <div style="width: 95%; text-align: center; border: 0px; margin-top: 5%; font-size:20px; font-family: 宋体;position: absolute">
+        暂无数据！
+    </div>
+</div>
+<!--
+<div id="window_userinfo" class="easyui-window" title="修改数据"
+     data-options="modal:true,closed:true,region:'center'">
+    <form id="yzxx" method="post">
+        <table cellpadding="5" class="basetable">
+            <tr>
+                <td>
+                   事业部名称：
+                </td>
+                <td>
+                    <input class="easyui-textbox" id="txtuserid" placeholder="自动生成" type="text" name="username"></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    用户账号：
+                </td>
+                <td>
+                    <input class="easyui-textbox" id="txtuserzh" type="text" name="username" data-options="required:true"></input>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    姓名：
+                </td>
+                <td>
+                    <input class="easyui-textbox" id="txtusername" type="text" name="username" data-options="required:true"></input>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    密码:
+                </td>
+                <td>
+                    <input id="password1" class="easyui-textbox" type="password" data-options="required:true,validType:'length[6,50]'" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    确认密码:
+                </td>
+                <td>
+                    <input id="password2" class="easyui-textbox" type="password" data-options="required:true,validType:'length[6,50]'" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    角色：
+                </td>
+                <td>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    用户状态：
+                </td>
+                <td colspan="3">
+                    <input id="stauts1" type="radio" name="status" value="1" /><label for="stauts0">启用</label>
+                    <input id="stauts0" type="radio" name="status" value="0" /><label for="stauts1">禁用</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" align="right">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="width: 80px"
+                       onclick="SaveUserInfo()">保存</a> <a href="javascript:void(0)" class="easyui-linkbutton"
+                                                          data-options="iconCls:'icon-cancel'" onclick="$('#window_userinfo').window('close')" style="width: 80px">
+                    取消</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>-->
+<!-- 新增和编辑数据 -->
+<div class="dig-wrapper" id="newData-wrapper">
+    <div class="form2-column" title="表单示例">
+        <form id="vui_sample" class="easyui-form" method="post" data-options="novalidate:true">
+            <div class="form-column2">
+                <div class="form-column-left">
+                    <input class="easyui-textbox" name="name" style="width:100%" data-options="label:'申请单号:',required:true">
+                </div>
+                <div class="form-column-left fm-left">
+                    <select class="easyui-combobox" name="state" data-options="label:'状态:',required:true" labelPosition="top" style="width:100%;">
+                        <option value="AL">新增</option>
+                        <option value="AK">已提交</option>
+                        <option value="AZ">申请中</option>
+                        <option value="AR">已入库</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-column2">
+                <div class="form-column-left">
+                    <input class="easyui-textbox" name="wznumber" style="width:100%" data-options="label:'物料编号:',required:true">
+                </div>
+                <div class="form-column-left fm-left">
+                    <input class="easyui-textbox" name="subject" style="width:100%" data-options="label:'物料名称:',required:true">
+                </div>
+            </div>
+            <div class="form-column2">
+                <div class="form-column-left">
+                    <select class="easyui-combobox" name="state" data-options="label:'物料类型:',required:true" labelPosition="top" style="width:100%;">
+                        <option value="AL">原材料</option>
+                        <option value="AK">辅料</option>
+                        <option value="AZ">产品</option>
+                        <option value="AR">深加工原料</option>
+                    </select>
+                </div>
+                <div class="form-column-left fm-left">
+                    <select class="easyui-combobox" name="state" data-options="label:'入库类型:',required:true" labelPosition="top" style="width:100%;">
+                        <option value="AL">原材料入库</option>
+                        <option value="AK">辅料入库</option>
+                        <option value="AZ">产品入库</option>
+                        <option value="AR">深加工原料入库</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-column2">
+                <div class="form-column-left">
+                    <input class="easyui-textbox" name="sqkf" style="width:100%" data-options="label:'申请库房:',required:true">
+                </div>
+                <div class="form-column-left fm-left">
+                    <input class="easyui-textbox" name="subject" style="width:100%" data-options="label:'申请数量:',required:true,validType:'number'">
+                </div>
+            </div>
+            <div class="form-column2">
+                <div class="form-column-left">
+                    <input class="easyui-textbox" name="sqkf" style="width:100%" data-options="label:'单位:',required:true">
+                </div>
+                <div class="form-column-left fm-left">
+                    <input class="easyui-textbox" id="storage-time" name="subject" style="width:100%" data-options="label:'存储期限:',required:true">
+                </div>
+            </div>
+            <div class="form-column1">
+                <div class="form-column-left">
+                    <input class="easyui-textbox" name="message" style="width:100%;height:60px" data-options="label:'备注:',multiline:true">
+                </div>
+            </div>
+            <div class="form-btnBar pl75">
+                <input type="submit" name="" value="保存" class="easyui-linkbutton btnPrimary" onclick="submitForm()" style="width:80px" />
+                <input type="submit" name="" value="重置" class="easyui-linkbutton btnDefault" onclick="clearForm()" style="width:80px" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        //当请求远程数据时，发送的额外参数。
+        GetqueryParams= function () {
+            var Params = {};
+            //Params.SearchRole = $("#SearchRole").combobox('getValue');
+            //Params.Jzzhch = $("#txtUserZhxm").textbox('getValue');
+            return Params;
+        }
+
+        UserinfoSearch= function () {
+            $("#dg").datagrid("reload", GetqueryParams());
+        }
+
+        //删除
+        Fn_Del= function () {
+            var rows = $('#dg').datagrid("getSelections");
+            if (rows.length > 0) {
+                $.messager.confirm("提示", "你确定要删除吗?", function (r) {
+                    if (r) {
+                        var ids = [];
+                        for (var i = 0; i < rows.length; i++) {
+                            ids.push(rows[i].userid);
+                        }
+                        var jsonObject = JSON.stringify(ids);
+                        DelRows(jsonObject);
+                    }
+                });
+            }
+            else {
+                $.messager.alert("提示", "请选择要删除的行", "error");
+            }
+        }
+
+        DelRows = function (userids) {
+            $.ajax({
+                type: 'post',
+                dataType: "json", //返回json格式的数据
+                url: "UsersList_Del",
+                data: {'UsersJson': userids},
+                cache: false,
+                success: function (Data) {
+                    if (Data == "1") {
+                        $('#dg').datagrid("reload");
+                        $.messager.alert("提示", "删除成功");
+                    }
+                    else {
+                        $.messager.alert("提示", "删除失败", "error");
+                    }
+                },
+                error: function (e) {
+                    var msg = responseTextTitle(e.responseText);
+                    $.messager.alert("提示", msg, "error");
+                }
+            });
+        }
+
+        getRowIndex = function(target) {
+            var tr = $(target).closest('tr.datagrid-row');
+            return parseInt(tr.attr('datagrid-row-index'));
+        }
+
+        EidtUserForm = function(target){
+            console.log(1234);
+            if (target) {
+                var thisindex = getRowIndex(target);
+                var row = $('#dg').datagrid('getRows')[thisindex];
+                $('#txtuserid').textbox('readonly',true);
+                $('#txtuserzh').textbox('readonly',true);
+                $('#txtuserid').textbox("setValue",row.userid);
+                $('#txtuserzh').textbox('setValue',row.userzh);
+                $('#password1').textbox("setValue","");
+                $('#password2').textbox("setValue","");
+                $('#txtusername').textbox("setValue", row.username);
+                $('#userrole').combobox('setValues', row.role);
+                $("input[name='status'][value=" + row.status + "]").prop("checked", true);
+                $('#dg').datagrid('clearSelections');
+                layer.open({
+                    type: 1,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['1000px', '450px'], //宽高
+                    content: $('#newData-wrapper'),
+                    zIndex: 1000
+                });
+            }
+        }
+
+        BindData = function () {
+            var queryParams = GetqueryParams();
+            $('#dg').datagrid({
+                width: '100%',
+                height: 'auto',
+                scrollbarSize: 0,
+                autoRowHeight: false,
+                url: "/busy/query",
+                queryParams: queryParams,
+                checkOnSelect: false,
+                selectOnCheck: true,
+                idField: 'id',
+                columns: [[
+                    {field: 'ck', title: '选择', sortable: true, checkbox: true},
+                    {field: 'companyName', title: '事业部名称', width: "7%", sortable: true},
+                    {field: 'yearNo', title: '年份', width: "7%", sortable: true},
+                    {field: 'monthNo', title: '月份', width: "7%", sortable: true},
+                    {field: 'outAllNum', title: '发货单总量', width: "7%", sortable: true},
+                    {field: 'rcvNum', title: '接收超标', width: "7%", sortable: true},
+                    {field: 'outday', title: '超标天数', width: "7%", sortable: true},
+                    {field: 'purchaseAllNum', title: '入库总数', width: "7%", sortable: true},
+                    {field: 'checkNum', title: '检验超标', width: "7%", sortable: true},
+                    {field: 'inStockNum', title: '入库超标', width: "8%", sortable: true},
+                    {field: 'invoiceHand', title: '手工价差', width: "8%", sortable: true},
+                    {field: 'invoiceDiff', title: '异常价差', width: "8%", sortable: true},
+                    {field: 'invoiceNum', title: '发票总数', width: "8%", sortable: true},
+                    /*{ field: 'status', title: '状态', width: "20%", sortable: true,formatter:function(value, row, index){
+                return row.zt;
+            }  },*/
+                    /*{ field: 'role', title: '角色', width: "20%", sortable: true ,formatter:function(value, row, index){
+                return row.dmmc;
+            }  },*/
+                    {
+                        field: 'action', title: '操作', width: "8%", align: 'center',
+                        formatter: function (value, row, index) {
+                            var e = '<a class="but-link" href="javascript:void(0)" onclick="EidtUserForm(this)"><span class="icon icon-edit"></span>编辑</a> ';
+                            return e;
+                        }
+                    }
+                ]],
+                onLoadSuccess: function (data) {//加载完毕后获取所有的checkbox遍历
+                    if (data.rows.length > 0) {
+                        //循环判断操作为新增的不能选择
+                        /* for (var i = 0; i < data.rows.length; i++) {
+                    //根据userid让某些行不可选
+                    if (data.rows[i].userid == "system") {
+                        $("input[type='checkbox']")[i + 1].disabled = true;//禁用
+                        //$("input[type='checkbox']")[i + 1].remove();//移除
+                    }
+                }*/
+
+                    } else {
+                        $(".div_empty").css({"display": "block"});
+                        $(this).closest('div.datagrid-wrap').find('div.datagrid-pager').hide();
+                    }
+
+                },
+                //当用户勾选全部行时触发
+                onCheckAll: function (rows) {
+                    $("input[type='checkbox']").each(function (index, el) {
+                        if (el.disabled == true) {
+                            $("#dg").datagrid('uncheckRow', index - 1);//此处参考其他人的代码，原代码为unselectRow
+                        }
+                        var checkboxHeader = $('div.datagrid-header-check input[type=checkbox]');//取到全选全不选这个元素
+                        checkboxHeader.prop("checked", "checked");//将其设置为checked即可
+                    });
+                },
+                onClickRow: function (rowIndex, rowData) {
+                    //加载完毕后获取所有的checkbox遍历
+                    $("input[type='checkbox']").each(function (index, el) {
+                        //如果当前的复选框不可选，则不让其选中
+                        if (el.disabled == true) {
+                            //POSStockHeadTable.datagrid('unselectRow', index - 1);
+                        }
+                    })
+                },
+                pageSize: 10,
+                pageList: [10, 20, 30, 50],
+                fitColumns: true,
+                striped: true,
+                pagination: true, //分页控件
+                rownumbers: true, //行号
+                onLoadError: function (e) {
+                    $.messager.alert("提示", "加载失败", "error");
+                }
+            });
+
+        }
+        /*
+    function EidtUserForm(target) {
+        var title="编辑";
+        if (target) {
+            var thisindex = getRowIndex(target);
+            var row = $('#dg').datagrid('getRows')[thisindex];
+            $('#txtuserid').textbox('readonly',true);
+            $('#txtuserzh').textbox('readonly',true);
+            $('#txtuserid').textbox("setValue",row.userid);
+            $('#txtuserzh').textbox('setValue',row.userzh);
+            $('#password1').textbox("setValue","");
+            $('#password2').textbox("setValue","");
+            $('#txtusername').textbox("setValue", row.username);
+            $('#userrole').combobox('setValues', row.role);
+            $("input[name='status'][value=" + row.status + "]").prop("checked", true);
+            $('#dg').datagrid('clearSelections');
+        }
+        else {
+            $('#txtuserid').textbox('readonly',true);
+            $('#txtuserzh').textbox('setValue',"");
+            $('#txtuserzh').textbox('readonly',false);
+            $('#txtuserid').textbox("setValue","");
+            $('#password1').textbox("setValue","");
+            $('#password2').textbox("setValue","");
+            $('#txtusername').textbox("setValue", "");
+            $('#userrole').combobox('setValues', "");
+            $("input[name='status'][value='1']").prop("checked", true);
+            title="新增";
+        }
+        $('#window_userinfo').window({
+            width: 500,
+            title: title,
+            modal: true
+        });
+        $('#window_userinfo').window('open');
+        $('#window_userinfo').window('vcenter');
+        $('#window_userinfo').window('hcenter');
+    }*/
+        /*function SaveUserInfo()
+    {
+       /!* var isValid = $("#yzxx").form('enableValidation').form('validate');
+        if (!isValid) {
+            $.messager.progress('close'); // hide progress bar while the form is invalid
+            return isValid;
+        }
+        if($('#password1').textbox("getValue")!=$('#password2').textbox("getValue"))
+        {
+            $.messager.alert("提示", "两次密码输入不一样", "");
+            return false;
+        }
+        if($('#userrole').combobox("getValues")=="")
+        {
+            $.messager.alert("提示", "请选择角色", "");
+            return false;
+        }*!/
+        //var userinfo = $('#yzxx').serializeObject();
+        var userinfo = new Object();
+        userinfo.userid=$('#txtuserid').textbox("getValue");
+        userinfo.userzh=$('#txtuserzh').textbox("getValue");
+        userinfo.username=$('#txtusername').textbox("getValue");
+        userinfo.passwd=$('#password1').textbox("getValue");
+        userinfo.role=$('#userrole').combobox('getValue');
+        userinfo.status=$("input[name='status']:checked").val();
+        var jsonObject = JSON.stringify(userinfo);
+        $.ajax({
+            type: 'post',
+            dataType: "json",
+            url: "****",
+        data: { 'json': jsonObject },
+        cache: false,
+            success: function (data) {
+        if (data == "1") {
+            $.messager.alert("提示", "保存成功", "");
+            $('#dg').datagrid("reload");
+            $('#window_userinfo').window('close');
+        }
+        else {
+            $.messager.alert("提示", data.msg, "error");
+        }
+    },
+        error: function (e) {
+            $.messager.alert("提示", "保存失败" + e.toString(), "error");
+        }
+    });
+    }*/
+
+
+        /*初始化数据*/
+        BindData();
+        //新增数据
+        $('#newData').on('click', function () {
+            layer.open({
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '450px'], //宽高
+                content: $('#newData-wrapper'),
+                zIndex: 1000
+            });
+        });
+
+        $('#del').on('click', function () {
+            layer.open({
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['1000px', '450px'], //宽高
+                content: $('#newData-wrapper'),
+                zIndex: 1000
+            });
+        });
+
+
+    });
+</script>
+
 </body>
 </html>

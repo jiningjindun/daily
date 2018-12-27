@@ -8,31 +8,21 @@
     <link href="../assets/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <link href="../assets/css/layout.css" rel="stylesheet" type="text/css" />
 </head>
-<!--<script src="../assets/json/datagrid_data.js" type="text/javascript"></script>-->
 <script src="../assets/js/jquery2.1.1.js" type="text/javascript"></script>
 <script src="../assets/js/jquery.easyui.min.js" type="text/javascript"></script>
 <body class="padding10">
 
-<div class="tools-row">
-    <table width="100%" id="table" style="padding-left:8px; border-spacing:0px; border-collapse:separate;">
-        <tr>
-            <td style="height:28px;" colspan="2">
-                @{
-                Html.RenderAction("SearchRole", "Shared");
-                }
-                账号（编号或姓名）：<input class="easyui-textbox" id="txtUserZhxm" data-options="width:80"/>
-                &nbsp; &nbsp; <button id="btnsearch" type="button" class="but-default" onclick="UserinfoSearch()"><span class="icon icon-magnifier"></span> 查询</button>
-            </td>
-        </tr>
-    </table>
-</div>
-<div class="tools-row">
+<div class="tools-row" style="padding-bottom:15px;">
     <table cellpadding="0" cellspacing="0" style="width:100%">
         <tr>
+            <td>日清日结每月数据</td>
+            <!--<td style="height:28px;" colspan="2">
+                账号:<input class="easyui-textbox" id="txtUserZhxm" data-options="width:80"/>
+                &nbsp; &nbsp; <button id="btnsearch" type="button" class="but-default" onclick="UserinfoSearch()"><span class="icon icon-magnifier"></span> 查询</button>
+            </td>-->
             <td align="right">
-                <button id="btnadd" type="button" class="but-primary" onclick="EidtUserForm()"><span class="icon icon-add"></span>新增</button>&nbsp;&nbsp;
-                <button id="btndel" type="button" class="but-primary" onclick="User_Del()"><span class="icon icon-delete"></span>删除</button>
-
+                <!--<button id="btnadd" type="button" class="easyui-linkbutton btnPrimary"  onclick="EidtUserForm()"><span class="icon icon-add"></span>新增</button>-->
+                <button id="btndel" type="button" class="easyui-linkbutton   btnDanger"  onclick="User_Del()"><span class="icon icon-delete"></span>删除</button>
             </td>
         </tr>
     </table>
@@ -44,12 +34,12 @@
     </div>
 </div>
 
-<div id="window_userinfo" class="easyui-window" title="修改密码" data-options="modal:true,closed:true,region:'center'">
+<div id="window_userinfo" class="easyui-window" title="修改数据" data-options="modal:true,closed:true,region:'center'">
     <form id="yzxx" method="post">
         <table cellpadding="5" class="basetable">
             <tr>
                 <td>
-                    编号(自动生成)：
+                   事业部名称：
                 </td>
                 <td>
                     <input class="easyui-textbox" id="txtuserid" placeholder="自动生成" type="text" name="username"></input>
@@ -94,14 +84,7 @@
                     角色：
                 </td>
                 <td>
-                    @model YidiTutor.Models.comboboxModel_Json
 
-                    <input id="userrole" class="easyui-combobox" name="userrole" style="width:80px;" data-options="data:@Model.data,
-					            method:'get',
-                                editable:false,
-					            valueField:'dm',
-					            textField:'dmmc',
-					            panelHeight:'auto'"/>
                 </td>
             </tr>
             <tr>
@@ -133,8 +116,8 @@
     //当请求远程数据时，发送的额外参数。
     function GetqueryParams() {
         var Params = {};
-        Params.SearchRole = $("#SearchRole").combobox('getValue');
-        Params.Jzzhch = $("#txtUserZhxm").textbox('getValue');
+        //Params.SearchRole = $("#SearchRole").combobox('getValue');
+        //Params.Jzzhch = $("#txtUserZhxm").textbox('getValue');
         return Params;
     }
 
@@ -257,7 +240,7 @@
         $.ajax({
             type: 'post',
             dataType: "json",
-            url: "@Url.Content",
+            url: "****",
         data: { 'json': jsonObject },
         cache: false,
             success: function (data) {
@@ -279,7 +262,7 @@
     function BindData() {
         var queryParams = GetqueryParams();
         $('#dg').datagrid({
-            width: 'auto',
+            width: '100%',
             height: 'auto',
             scrollbarSize: 0,
             autoRowHeight: false,
@@ -290,17 +273,25 @@
             idField: 'id',
             columns: [[
             { field: 'ck', title: '选择', sortable: true, checkbox: true },
-            { field: 'companyName', title: '事业部名称', width: "10%", sortable: true },
-            { field: 'yearNo', title: '年份', width: "10%", sortable: true },
-            { field: 'monthNo', title: '月份', width: "20%", sortable: true},
-            { field: 'outAllNum', title: '月份', width: "20%", sortable: true},
+            { field: 'companyName', title: '事业部名称', width: "80", sortable: true },
+            { field: 'yearNo', title: '年份', width: "50", sortable: true },
+            { field: 'monthNo', title: '月份', width: "50", sortable: true},
+            { field: 'outAllNum', title: '发货单总量', width: "80", sortable: true},
+            { field: 'rcvNum', title: '接收超标', width: "70", sortable: true},
+            { field: 'outday', title: '超标天数', width: "70", sortable: true},
+            { field: 'purchaseAllNum', title: '入库总数', width: "70", sortable: true},
+            { field: 'checkNum', title: '检验超标', width: "70", sortable: true},
+            { field: 'inStockNum', title: '入库超标', width: "70", sortable: true},
+            { field: 'invoiceHand', title: '手工价差', width: "70", sortable: true},
+            { field: 'invoiceDiff', title: '异常价差', width: "70", sortable: true},
+            { field: 'invoiceNum', title: '发票总数', width: "70", sortable: true},
             /*{ field: 'status', title: '状态', width: "20%", sortable: true,formatter:function(value, row, index){
                 return row.zt;
             }  },*/
             /*{ field: 'role', title: '角色', width: "20%", sortable: true ,formatter:function(value, row, index){
                 return row.dmmc;
             }  },*/
-            { field: 'action', title: '操作', width: "15%", align: 'center',
+            { field: 'action', title: '操作', width: "10%", align: 'center',
                 formatter: function (value, row, index) {
                     var e = '<a class="but-link" href="javascript:void(0)" onclick="EidtUserForm(this)"><span class="icon icon-edit"></span>编辑</a> ';
                     return e;
