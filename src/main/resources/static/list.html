@@ -29,8 +29,8 @@
     </table>-->
     <div class="btnbar-tools">
        <!-- <a href="javascript:;" class="add" id="newData"><i class="fa fa-plus-square success"></i>添加</a>-->
-        <a href="javascript:;" class="edit"><i class="fa fa-pencil-square info"></i>编辑</a>
-        <a href="javascript:;" class="del"><i class="fa fa-times-rectangle danger"></i>删除</a>
+        <!--<a href="javascript:;" class="edit"><i class="fa fa-pencil-square info"></i>编辑</a>-->
+        <a href="javascript:;" class="del" id="delData" onclick="Fn_Del()"><i class="fa fa-times-rectangle danger"></i>删除</a>
        <!-- <a href="javascript:;" class="count"><i class="fa fa-pie-chart purple"></i>统计</a>
         <a href="javascript:;" class="check"><i class="fa fa-check-circle yellow"></i>审核</a>-->
     </div>
@@ -120,160 +120,83 @@
 <div class="dig-wrapper" id="newData-wrapper">
     <div class="form2-column" title="表单示例">
         <form id="vui_sample" class="easyui-form" method="post" data-options="novalidate:true">
+            <input class="easyui-textbox" type="hidden"  name="id" id="id" value="0" />
             <div class="form-column2">
                 <div class="form-column-left">
-                    <input class="easyui-textbox" name="name" style="width:100%" data-options="label:'申请单号:',required:true">
+                    <input class="easyui-textbox" name="yearno" id="yearNo" style="width:100%" data-options="label:'年份:',required:true">
                 </div>
                 <div class="form-column-left fm-left">
-                    <select class="easyui-combobox" name="state" data-options="label:'状态:',required:true" labelPosition="top" style="width:100%;">
-                        <option value="AL">新增</option>
-                        <option value="AK">已提交</option>
-                        <option value="AZ">申请中</option>
-                        <option value="AR">已入库</option>
-                    </select>
+                    <input class="easyui-textbox" name="monthno" id="monthNo" style="width:100%" data-options="label:'月份:',required:true">
                 </div>
             </div>
+
             <div class="form-column2">
                 <div class="form-column-left">
-                    <input class="easyui-textbox" name="wznumber" style="width:100%" data-options="label:'物料编号:',required:true">
+                    <input class="easyui-textbox" name="companyname"  id="companyName" style="width:100%" data-options="label:'事业部名称:',required:true">
                 </div>
                 <div class="form-column-left fm-left">
-                    <input class="easyui-textbox" name="subject" style="width:100%" data-options="label:'物料名称:',required:true">
+                    <input class="easyui-textbox" name="rcvnum" id="rcvNum" style="width:100%" data-options="label:'接收超标:',required:true">
                 </div>
             </div>
+
             <div class="form-column2">
                 <div class="form-column-left">
-                    <select class="easyui-combobox" name="state" data-options="label:'物料类型:',required:true" labelPosition="top" style="width:100%;">
-                        <option value="AL">原材料</option>
-                        <option value="AK">辅料</option>
-                        <option value="AZ">产品</option>
-                        <option value="AR">深加工原料</option>
-                    </select>
+                    <input class="easyui-textbox" name="outallnum" id="outAllNum" style="width:100%" data-options="label:'发货单总量:',required:true">
                 </div>
                 <div class="form-column-left fm-left">
-                    <select class="easyui-combobox" name="state" data-options="label:'入库类型:',required:true" labelPosition="top" style="width:100%;">
-                        <option value="AL">原材料入库</option>
-                        <option value="AK">辅料入库</option>
-                        <option value="AZ">产品入库</option>
-                        <option value="AR">深加工原料入库</option>
-                    </select>
+                    <input class="easyui-textbox" name="checknum" id="checkNum" style="width:100%" data-options="label:'检验超标:',required:true,validType:'number'">
                 </div>
             </div>
             <div class="form-column2">
                 <div class="form-column-left">
-                    <input class="easyui-textbox" name="sqkf" style="width:100%" data-options="label:'申请库房:',required:true">
+                    <input class="easyui-textbox" name="instocknum" id="inStockNum"  style="width:100%" data-options="label:'入库超标:',required:true">
                 </div>
                 <div class="form-column-left fm-left">
-                    <input class="easyui-textbox" name="subject" style="width:100%" data-options="label:'申请数量:',required:true,validType:'number'">
+                    <input class="easyui-textbox" name="purchaseallnum" id="purchaseAllNum"  style="width:100%" data-options="label:'入库总数:',required:true">
                 </div>
             </div>
             <div class="form-column2">
                 <div class="form-column-left">
-                    <input class="easyui-textbox" name="sqkf" style="width:100%" data-options="label:'单位:',required:true">
+                    <input class="easyui-textbox" name="purchasemoney" id="purchaseMoney"  style="width:100%" data-options="label:'采购总价:',required:true">
                 </div>
                 <div class="form-column-left fm-left">
-                    <input class="easyui-textbox" id="storage-time" name="subject" style="width:100%" data-options="label:'存储期限:',required:true">
+                    <input class="easyui-textbox" name="gapmoney" id="gapMoney"  style="width:100%" data-options="label:'采购价差:',required:true">
                 </div>
             </div>
-            <div class="form-column1">
+            <div class="form-column2">
                 <div class="form-column-left">
-                    <input class="easyui-textbox" name="message" style="width:100%;height:60px" data-options="label:'备注:',multiline:true">
+                    <input class="easyui-textbox" name="invoicehand" id="invoiceHand"  style="width:100%" data-options="label:'手工价差:',required:true">
+                </div>
+                <div class="form-column-left fm-left">
+                    <input class="easyui-textbox" name="invoiceten" id="invoiceTen"  style="width:100%" data-options="label:'10%<=发票价差<50%:',required:true">
                 </div>
             </div>
-            <div class="form-btnBar pl75">
-                <input type="submit" name="" value="保存" class="easyui-linkbutton btnPrimary" onclick="submitForm()" style="width:80px" />
-                <input type="submit" name="" value="重置" class="easyui-linkbutton btnDefault" onclick="clearForm()" style="width:80px" />
+            <div class="form-column2">
+                <div class="form-column-left">
+                    <input class="easyui-textbox" name="invoicefive" id="invoiceFive"  style="width:100%" data-options="label:'50%<=发票价差<100%:',required:true">
+                </div>
+                <div class="form-column-left fm-left">
+                    <input class="easyui-textbox" name="invoicebai" id="invoiceBai"  style="width:100%" data-options="label:'100%<=发票价差:',required:true">
+                </div>
+            </div>
+            <div class="form-column2">
+                <div class="form-column-left">
+                    <input class="easyui-textbox" name="invoicediff" id="invoiceDiff"  style="width:100%" data-options="label:'发票异常数目:',required:true">
+                </div>
+                <div class="form-column-left fm-left">
+                    <input class="easyui-textbox" name="invoicenum" id="invoiceNum"  style="width:100%" data-options="label:'发票总数:',required:true">
+                </div>
             </div>
         </form>
+       <!-- <div class="form-btnBar pl75">
+            <input type="submit" id="commit" value="保存" class="easyui-linkbutton btnPrimary" onclick="submitForm()" style="width:80px" />
+            <input type="reset" name="" value="重置" class="easyui-linkbutton btnDefault" onclick="clearForm()" style="width:80px" />
+        </div>-->
     </div>
 </div>
 
 <script type="text/javascript">
     $(document).ready(function() {
-        //当请求远程数据时，发送的额外参数。
-        GetqueryParams= function () {
-            var Params = {};
-            //Params.SearchRole = $("#SearchRole").combobox('getValue');
-            //Params.Jzzhch = $("#txtUserZhxm").textbox('getValue');
-            return Params;
-        }
-
-        UserinfoSearch= function () {
-            $("#dg").datagrid("reload", GetqueryParams());
-        }
-
-        //删除
-        Fn_Del= function () {
-            var rows = $('#dg').datagrid("getSelections");
-            if (rows.length > 0) {
-                $.messager.confirm("提示", "你确定要删除吗?", function (r) {
-                    if (r) {
-                        var ids = [];
-                        for (var i = 0; i < rows.length; i++) {
-                            ids.push(rows[i].userid);
-                        }
-                        var jsonObject = JSON.stringify(ids);
-                        DelRows(jsonObject);
-                    }
-                });
-            }
-            else {
-                $.messager.alert("提示", "请选择要删除的行", "error");
-            }
-        }
-
-        DelRows = function (userids) {
-            $.ajax({
-                type: 'post',
-                dataType: "json", //返回json格式的数据
-                url: "UsersList_Del",
-                data: {'UsersJson': userids},
-                cache: false,
-                success: function (Data) {
-                    if (Data == "1") {
-                        $('#dg').datagrid("reload");
-                        $.messager.alert("提示", "删除成功");
-                    }
-                    else {
-                        $.messager.alert("提示", "删除失败", "error");
-                    }
-                },
-                error: function (e) {
-                    var msg = responseTextTitle(e.responseText);
-                    $.messager.alert("提示", msg, "error");
-                }
-            });
-        }
-
-        getRowIndex = function(target) {
-            var tr = $(target).closest('tr.datagrid-row');
-            return parseInt(tr.attr('datagrid-row-index'));
-        }
-
-        EidtUserForm = function(target){
-            console.log(1234);
-            if (target) {
-                var thisindex = getRowIndex(target);
-                var row = $('#dg').datagrid('getRows')[thisindex];
-                $('#txtuserid').textbox('readonly',true);
-                $('#txtuserzh').textbox('readonly',true);
-                $('#txtuserid').textbox("setValue",row.userid);
-                $('#txtuserzh').textbox('setValue',row.userzh);
-                $('#password1').textbox("setValue","");
-                $('#password2').textbox("setValue","");
-                $('#txtusername').textbox("setValue", row.username);
-                $('#userrole').combobox('setValues', row.role);
-                $("input[name='status'][value=" + row.status + "]").prop("checked", true);
-                $('#dg').datagrid('clearSelections');
-                layer.open({
-                    type: 1,
-                    skin: 'layui-layer-rim', //加上边框
-                    area: ['1000px', '450px'], //宽高
-                    content: $('#newData-wrapper'),
-                    zIndex: 1000
-                });
-            }
-        }
 
         BindData = function () {
             var queryParams = GetqueryParams();
@@ -310,7 +233,7 @@
                     {
                         field: 'action', title: '操作', width: "8%", align: 'center',
                         formatter: function (value, row, index) {
-                            var e = '<a class="but-link" href="javascript:void(0)" onclick="EidtUserForm(this)"><span class="icon icon-edit"></span>编辑</a> ';
+                            var e = '<a class="but-link" href="javascript:void(0)" onclick="EidtUserForm(this)" title="编辑"> <i class="fa fa-pencil-square info"></i></a> ';
                             return e;
                         }
                     }
@@ -363,6 +286,134 @@
             });
 
         }
+        //当请求远程数据时，发送的额外参数。
+        GetqueryParams= function () {
+            var Params = {};
+            //Params.SearchRole = $("#SearchRole").combobox('getValue');
+            //Params.Jzzhch = $("#txtUserZhxm").textbox('getValue');
+            return Params;
+        }
+
+        UserinfoSearch= function () {
+            $("#dg").datagrid("reload", GetqueryParams());
+        }
+
+        //删除
+        Fn_Del= function () {
+            var rows = $('#dg').datagrid("getSelections");
+
+            if (rows.length > 0) {
+                $.messager.confirm("提示", "你确定要删除吗?", function (r) {
+                    if (r) {
+                        var ids = [];
+                        for (var i = 0; i < rows.length; i++) {
+                            ids.push(rows[i].id);
+                        }
+                        var jsonObject = JSON.stringify(ids);
+                        DelRows(ids);
+                    }
+                });
+            }
+            else {
+                $.messager.alert("提示", "请选择要删除的行", "error");
+            }
+        }
+
+        DelRows = function (ids) {
+            var param = {ids:ids};
+            $.ajax({
+                type: 'get',
+                dataType: "json", //返回json格式的数据
+                url: "/busy/deleteByIds",
+                data: param,
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        $('#dg').datagrid("reload");
+                        $.messager.alert("提示", "删除成功");
+                    }
+                    else {
+                        $.messager.alert("提示", "删除失败", "error");
+                    }
+                },
+                error: function (e) {
+                    var msg = responseTextTitle(e.responseText);
+                    $.messager.alert("提示", msg, "error");
+                }
+            });
+        }
+
+        GetRowIndex = function(target) {
+            var tr = $(target).closest('tr.datagrid-row');
+            return parseInt(tr.attr('datagrid-row-index'));
+        }
+
+        EidtUserForm = function(target){
+            if (target) {
+                var thisindex = GetRowIndex(target);
+                var row = $('#dg').datagrid('getRows')[thisindex];
+                $('#id').textbox('setValue',row.id);
+                $('#yearNo').textbox('setValue',row.yearNo);
+                $('#monthNo').textbox("setValue",row.monthNo);
+                $('#companyName').textbox('setValue',row.companyName);
+                $('#companyName').textbox('readonly',true);
+                $('#outAllNum').textbox('setValue',row.outAllNum);
+                $('#rcvNum').textbox("setValue",row.rcvNum);
+                $('#checkNum').textbox("setValue",row.checkNum);
+                $('#purchaseAllNum').textbox("setValue", row.purchaseAllNum);
+                $('#inStockNum').textbox("setValue", row.inStockNum);
+                $('#purchaseMoney').textbox("setValue", row.purchaseMoney);
+                $('#gapMoney').textbox("setValue", row.gapMoney);
+                $('#invoiceHand').textbox("setValue", row.invoiceHand);
+                $('#invoiceTen').textbox("setValue", row.invoiceTen);
+                $('#invoiceFive').textbox("setValue", row.invoiceFive);
+                $('#invoiceBai').textbox("setValue", row.invoiceBai);
+                $('#invoiceDiff').textbox("setValue", row.invoiceDiff);
+                $('#invoiceNum').textbox("setValue", row.invoiceNum);
+                /*$('#purchaseAllNum').combobox('setValues', row.purchaseAllNum);
+                $("input[name='status'][value=" + row.status + "]").prop("checked", true);*/
+                $('#dg').datagrid('clearSelections');
+                layer.open({
+                    type: 1,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['1000px', '500px'], //宽高
+                    content: $('#newData-wrapper'),
+                    btn: ['提交',  '关闭']
+                    ,btn1: function(index, layero){
+                        //按钮【按钮一】的回调
+                        submitForm(layer,index);
+                    }
+                    ,btn2: function(index, layero){
+                        //return false ;//开启该代码可禁止点击该按钮关闭
+                     },
+                    zIndex: 1000
+                });
+            }
+        }
+
+        submitForm = function (layeror,index){//保存提交
+            $('#vui_sample').form('submit',{
+                url: 'busy/saveinfo',
+                onSubmit:function(){
+                    return $(this).form('enableValidation').form('validate');
+                },
+                success:function(data){
+                    data = eval( '('+data+')' );
+                    if(data.success==true){
+                        $.messager.alert("提示", "编辑成功");
+                        $('#dg').datagrid("reload");
+                    }else{
+                        $.messager.alert( "提示","编辑失败");
+                    }
+                    layeror.close(index);
+                }
+            });
+        }
+       /* clearForm = function (){//重置表单
+            $('#vui_sample').form('clear');
+        }*/
+
+
         /*
     function EidtUserForm(target) {
         var title="编辑";
@@ -449,11 +500,10 @@
     });
     }*/
 
-
         /*初始化数据*/
         BindData();
         //新增数据
-        $('#newData').on('click', function () {
+        /*$('#edit').on('click', function () {
             layer.open({
                 type: 1,
                 skin: 'layui-layer-rim', //加上边框
@@ -461,17 +511,38 @@
                 content: $('#newData-wrapper'),
                 zIndex: 1000
             });
-        });
+        });*/
 
-        $('#del').on('click', function () {
-            layer.open({
-                type: 1,
-                skin: 'layui-layer-rim', //加上边框
-                area: ['1000px', '450px'], //宽高
-                content: $('#newData-wrapper'),
-                zIndex: 1000
-            });
-        });
+       /* $('#delData').on('click', function () {
+            var rows = $("#dg").datagrid("getChecked");
+            if (rows.length == 0) {
+                $.messager.alert("提示", "请选择要删除！", "info");
+                return;
+            }
+            $.messager.confirm("确认", "确定要删除？", function (isok) {
+                if (isok) {
+                    var md = [];
+                    $.each(rows, function (index, row) {
+                        md.push(row.id);
+                    })
+                    var ids = md.join(',');
+                    $.ajax({
+                        url: "/busy/deleteCheck",
+                        type: "post",
+                        data: { ids: ids },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.flag == "1") {
+                                reload();
+                            }
+                            else {
+                                $.messager.alert("提示", data.msg);
+                            }
+                        }
+                    })
+                }
+            })
+        });*/
 
 
     });

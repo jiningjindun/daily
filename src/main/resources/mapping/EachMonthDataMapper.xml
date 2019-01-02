@@ -93,4 +93,12 @@
     </where>
   </select>
 
+  <delete id="delSelectData"  parameterType = "java.util.List">
+    delete from each_month_data where 1>2 or id in
+    <foreach collection="list"  item="id" open="(" separator="," close=")"  >
+      #{id}
+    </foreach>
+  </delete>
+
+
 </mapper>

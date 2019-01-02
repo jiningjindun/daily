@@ -71,21 +71,21 @@ public class PurchaseService {
             desFile = new File(file2Name);
             desFile.createNewFile();
             copyFileUsingFileChannels(file2,desFile);*/
-          // caculateCheckTime(file2, freestyle);//检验时长
+          caculateCheckTime(file2, freestyle);//检验时长
         }
         if (!StringUtils.isEmpty(file3.getName())) {
            /* String file3Name = savePath+file3.getName();
             desFile = new File(file3Name);
             desFile.createNewFile();
             copyFileUsingFileChannels(file3,desFile);*/
-           // caculateGeneratorPrice(file3);//采购价差
+           caculateGeneratorPrice(file3);//采购价差
         }
         if (!StringUtils.isEmpty(file4.getName())) {
            /* String file4Name = savePath+file4.getName();
             desFile = new File(file4Name);
             desFile.createNewFile();
             copyFileUsingFileChannels(file4,desFile);*/
-            //caculateInvoice(file4);//发票价差
+            caculateInvoice(file4);//发票价差
         }
         saveToDataSource(cid, month, year, freestyle);//写入到数据库
 
@@ -1006,5 +1006,20 @@ public class PurchaseService {
         return eachMonthDataMapper.getTraineeTotal(paraMap);
     }
 
+    public boolean updateOneMonth(EachMonthData eachMonthData) {
+        if (eachMonthDataMapper.updateByPrimaryKeySelective(eachMonthData)>0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean delSelectData(List ids) {
+        if (eachMonthDataMapper.delSelectData(ids)>0){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
 

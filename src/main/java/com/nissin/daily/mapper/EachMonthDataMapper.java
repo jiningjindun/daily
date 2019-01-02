@@ -18,4 +18,6 @@ public interface EachMonthDataMapper extends MyMapper<EachMonthData> {
     List<Map> selectTraineeLimit(Map paraMap);
 
     long getTraineeTotal(Map paraMap);
+
+    int delSelectData(List ids);
 }

@@ -1,6 +1,7 @@
 package com.nissin.daily.controller;
 
 import com.nissin.daily.entity.CaculateData;
+import com.nissin.daily.entity.EachMonthData;
 import com.nissin.daily.entity.Page;
 import com.nissin.daily.service.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,8 +73,8 @@ public class BusinessController {
                                   @RequestParam("year") int year,//年份
                                   HttpServletRequest request,
                                   HttpServletResponse response) {
-        String path = this.getClass().getResource("/").getPath() + "templates/业务比例分析.xlsx";
-        String outPath = this.getClass().getResource("/").getPath() + "temp/" + year + "-" + month + ".xlsx";
+        String path = this.path + "templates/业务比例分析.xlsx";
+        String outPath = this.path + "temp/" + year + "-" + month + ".xlsx";
         String filePath = "";
         try {
             filePath = purchaseService.caculateBusyExcel(path, outPath, year, month);
@@ -119,25 +121,26 @@ public class BusinessController {
 
     @ResponseBody
     @RequestMapping(value="/saveinfo",method = RequestMethod.POST)
-    public Map saveinfo(@RequestParam(value="page", required=false) String page,
-                     @RequestParam(value="rows", required=false) String rows){
+    public Map saveinfo(EachMonthData eachMonthData){
 
-        Page pageBean = new Page(Integer.parseInt(page), Integer.parseInt(rows));
         Map reMap = new HashMap();
-        Map paraMap = new HashMap();
-
-        paraMap.put("firstPage", pageBean.getFirstPage());
-        paraMap.put("rows", pageBean.getRows());
-
-        try {
-            List<Map> list = purchaseService.showAllTrainee(paraMap);
-            long total = purchaseService.getTraineeTotal(paraMap);
-            reMap.put("rows", list);     //存放每页记录数
-            reMap.put("total", total);   //存放总记录数 ，必须的
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println(eachMonthData);
+        boolean success = purchaseService.updateOneMonth(eachMonthData);
+        reMap.put("success", success);   //存放总记录数 ，必须的
         return reMap;
     }
+    @ResponseBody
+    @RequestMapping(value="/deleteByIds",method = RequestMethod.GET)
+    public Map deleteByIds(@RequestParam(value="ids[]", required=true) Integer[]  ids){
+
+        Map reMap = new HashMap();
+        System.out.println(ids);
+        List<Integer>   list= Arrays.asList(ids);
+        boolean success = purchaseService.delSelectData(list);
+        reMap.put("success", success);   //存放总记录数 ，必须的
+        return reMap;
+    }
+
+
 
 }
