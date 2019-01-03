@@ -7,6 +7,7 @@ import com.nissin.daily.mapper.EachMonthDataMapper;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.formula.constant.ErrorConstant;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.*;
@@ -139,25 +140,25 @@ public class PurchaseService {
     }
 
 
-    public String transferFile(MultipartFile file, String path) {
+    public String transferFile(MultipartFile file, String path,int cid,int month,int year,String fileName) {
         if (file.isEmpty()) {
             return "";
         }
-        String realDirectory = path;
-        String fileName = file.getOriginalFilename();
-        String filename = fileName;
+        String realDirectory = path+cid+File.separator+year+"-"+month+File.separator;
+        /*String fileName = file.getOriginalFilename();
+        String filename = fileName;*/
         //普通上传
         File fi = new File(realDirectory);
         try {
             if (!fi.isDirectory()) { // 如果文件夹不存在就新建
                 fi.mkdirs();
             }
-            File fie = new File(realDirectory, filename);
+            File fie = new File(realDirectory, fileName);
             file.transferTo(fie);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return realDirectory+filename;
+        return realDirectory+fileName;
     }
 
     /**
@@ -577,7 +578,7 @@ public class PurchaseService {
                      * 第一步计算检验超标数
                      */
                     if (StringUtils.isEmpty(acceptDate) || StringUtils.isEmpty(trancferDate)) {
-                        if ("要求检验".equals(receiving_qa) && StringUtils.isEmpty(rejectDate) && StringUtils.isEmpty(returnDate) && !StringUtils.isEmpty(trancferDate)) {
+                        if ("要求检验".equals(receiving_qa) && StringUtils.isEmpty(rejectDate) && StringUtils.isEmpty(returnDate)) {
                             count++;
                             isCheckPass = false;
                         }
@@ -602,15 +603,16 @@ public class PurchaseService {
                     /**
                      * 第二步，计算入库超标数
                      */
-                    if (StringUtils.isEmpty(deliverDate) || StringUtils.isEmpty(acceptDate)) {
-                        if ("直接接收".equals(receiving_qa)) {
-                            if (!StringUtils.isEmpty(recevDate) && !StringUtils.isEmpty(deliverDate)) {
-                                disDay = getDistaceTime(recevDate, deliverDate);
-                                if (disDay >= 1) {
-                                    kuCount++;
-                                    isKuPass = false;
-                                }
+                    if(StringUtils.isEmpty(deliverDate)||StringUtils.isEmpty(acceptDate)){
+                        if (!StringUtils.isEmpty(recevDate) && !StringUtils.isEmpty(deliverDate)) {
+                            disDay = getDistaceTime(recevDate, deliverDate);
+                            if (disDay >= 1) {
+                                kuCount++;
+                                isKuPass = false;
                             }
+                        }else if(StringUtils.isEmpty(deliverDate)&&StringUtils.isEmpty(rejectDate)&&StringUtils.isEmpty(returnDate)&&!StringUtils.isEmpty(recevDate)){
+                            kuCount++;
+                            isKuPass = false;
                         }
                     } else {
                         disDay = getDistaceTime(acceptDate, deliverDate);

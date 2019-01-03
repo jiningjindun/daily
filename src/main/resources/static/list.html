@@ -194,7 +194,7 @@
         </div>-->
     </div>
 </div>
-
+<iframe id="ifile" style="display:none"></iframe>
 <script type="text/javascript">
     $(document).ready(function() {
 
@@ -213,6 +213,7 @@
                 columns: [[
                     {field: 'ck', title: '选择', sortable: true, checkbox: true},
                     {field: 'companyName', title: '事业部名称', width: "7%", sortable: true},
+                    {field: 'companyId', title: '事业部id', hidden: true},
                     {field: 'yearNo', title: '年份', width: "7%", sortable: true},
                     {field: 'monthNo', title: '月份', width: "7%", sortable: true},
                     {field: 'outAllNum', title: '发货单总量', width: "7%", sortable: true},
@@ -233,7 +234,8 @@
                     {
                         field: 'action', title: '操作', width: "8%", align: 'center',
                         formatter: function (value, row, index) {
-                            var e = '<a class="but-link" href="javascript:void(0)" onclick="EidtUserForm(this)" title="编辑"> <i class="fa fa-pencil-square info"></i></a> ';
+                            var e = '<a class="but-link" href="javascript:void(0)" onclick="EidtUserForm(this)" title="编辑"> <i class="fa fa-pencil-square info"></i></a> '+
+                                '　<a class="but-link" href="javascript:void(0)" onclick="exportRow(this)" title="导出"> <i class="fa fa-plus-circle info"></i></a> ';
                             return e;
                         }
                     }
@@ -378,14 +380,17 @@
                     skin: 'layui-layer-rim', //加上边框
                     area: ['1000px', '500px'], //宽高
                     content: $('#newData-wrapper'),
-                    btn: ['提交',  '关闭']
+                    btn: ['提交',  '关闭','导出']
                     ,btn1: function(index, layero){
                         //按钮【按钮一】的回调
                         submitForm(layer,index);
                     }
                     ,btn2: function(index, layero){
                         //return false ;//开启该代码可禁止点击该按钮关闭
-                     },
+                     },btn3:function(index,lavero){
+                        exportRow(index);
+                        return false;
+                    },
                     zIndex: 1000
                 });
             }
@@ -409,6 +414,22 @@
                 }
             });
         }
+
+        exportRow = function(target){
+            if (target) {
+                var thisindex = GetRowIndex(target);
+                var row = $('#dg').datagrid('getRows')[thisindex];
+                var cid = row.companyId;
+                var year = row.yearNo;
+                var month = row.monthNo;
+                var url = "/busy/exportOneMonth?cid="+cid+"&year="+year+"&month="+month;
+                var dom=document.getElementById('ifile');
+                dom.src=url;
+            }
+        }
+
+
+
        /* clearForm = function (){//重置表单
             $('#vui_sample').form('clear');
         }*/

@@ -3,6 +3,7 @@ package com.nissin.daily.controller;
 import com.nissin.daily.entity.CaculateData;
 import com.nissin.daily.entity.EachMonthData;
 import com.nissin.daily.entity.Page;
+import com.nissin.daily.service.DownZipService;
 import com.nissin.daily.service.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,9 @@ public class BusinessController {
      */
     @Autowired
     private PurchaseService purchaseService;
+    @Autowired
+    private DownZipService downZipService;
+
     @Value(value = "${file.path}")
     private String path;
     @RequestMapping(value = {"caculateBusiness"}, method = RequestMethod.POST)
@@ -45,14 +49,12 @@ public class BusinessController {
                                                 @RequestParam(value ="freestyle" ,required = false) Integer  freestyle,//休息制度
                                                 HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>();
-        String code = "";
         try {
-            String savePath =  this.path+cid+"-"+month+"-"+year+"//" ;
-            String file1Name = purchaseService.transferFile(file1,savePath);
-            String file2Name =  purchaseService.transferFile(file2,savePath);
-            String file3Name =  purchaseService.transferFile(file3,savePath);
-            String file4Name =  purchaseService.transferFile(file4,savePath);
-            //System.out.println("备份完成");
+            String savePath =  this.path ;
+            String file1Name = purchaseService.transferFile(file1,savePath,cid,month,year,"发货到接收"+".xlsx");
+            String file2Name =  purchaseService.transferFile(file2,savePath,cid,month,year,"接收到入库"+".xlsx");
+            String file3Name =  purchaseService.transferFile(file3,savePath,cid,month,year,"采购价差"+".xlsx");
+            String file4Name =  purchaseService.transferFile(file4,savePath,cid,month,year,"发票价差"+".xlsx");
             //创建源文件
             File fileone = new File(file1Name);
             File filetwo = new File(file2Name);
@@ -141,6 +143,14 @@ public class BusinessController {
         return reMap;
     }
 
-
+    @ResponseBody
+    @RequestMapping(value = {"/exportOneMonth"}, method = RequestMethod.GET)
+    public void exportOneMonth( @RequestParam("cid") Integer  cid,//部门id
+                                @RequestParam("month") Integer  month,//月份
+                                @RequestParam("year") Integer  year,//年份
+                                HttpServletRequest request,
+                                  HttpServletResponse response) {
+        downZipService.exportZip(request,response,cid,year,month,this.path);
+    }
 
 }

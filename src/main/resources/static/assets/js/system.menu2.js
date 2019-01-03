@@ -13,7 +13,7 @@ var _menus=[
     {"menuid":"00","icon":"fa-trophy","menuname":"日清日结管理",parentMenu:'0',
         "menus":[{"menuid":"000","menuname":"每月数据","icon":"fa-dashboard","url":"list.html"},
                 {"menuid":"001","menuname":"分析数据","icon":"fa-delicious","url":"import.html"},
-                {"menuid":"002","menuname":"导出数据","icon":"fa-delicious","url":"export.html"}
+                {"menuid":"002","menuname":"导出数据","icon":"fa-tty","url":"export.html"}
             ]},{
      "menuid":"01","icon":"fa-television","menuname":"表单成功案例",parentMenu:'1',
         "menus":[{"menuid":"010","menuname":"代办事项","icon":"fa-tty","url":"https://item.taobao.com/item.htm?id=545823027227"},

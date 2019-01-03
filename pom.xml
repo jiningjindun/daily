@@ -101,7 +101,12 @@
 			<version> 4.12</version>
 		</dependency>
 
-
+		<!--zip打包-->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.2</version>
+		</dependency>
 
 		<!--热部署功能-->
 		<!--<dependency>

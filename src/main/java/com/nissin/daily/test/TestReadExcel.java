@@ -313,11 +313,12 @@ public class TestReadExcel {
             String creationDate = "";
             String rcvDate = "";
             String shipment = "";
+            double value = 0;
             for (int i = 1; i <= trLength; i++) {
                 row = sheet.getRow(i);
                 creationDate = row.getCell(3).getStringCellValue();
-                rcvDate = row.getCell(8).getStringCellValue();
-                shipment = row.getCell(4).getStringCellValue();
+                rcvDate = row.getCell(10).getStringCellValue();
+                shipment = row.getCell(5).getStringCellValue();
                 if (StringUtils.isEmpty(rcvDate)) {
                     if (!"CANCELLED".equals(shipment)) {
                         count++;
@@ -361,6 +362,8 @@ public class TestReadExcel {
             e.printStackTrace();
         }
     }
+
+
 
     /**
      * 计算检验超标的数目
@@ -1106,20 +1109,17 @@ public class TestReadExcel {
             desFile.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        try {
-            copyFileUsingFileChannels(file1,desFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        caculateGetTime(2,desFile);//接收时长*/
+        }*/
+        String path ="E:\\工作资料\\日清日结\\统计测试\\日清日结12月份\\发货到接收\\道机.xlsx";
+        File desFile = new File(path);
+        caculateGetTime(2,desFile);//接收时长
 
-        String path ="E:\\工作资料\\erp运维\\日清日结\\统计软件\\excel\\test.xlsx";
+       /* String path ="E:\\工作资料\\erp运维\\日清日结\\统计软件\\excel\\test.xlsx";
         try {
             delExcelRow(path);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 
